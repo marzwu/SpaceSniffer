@@ -1,8 +1,9 @@
 package org.marz.spaceSniffer {
     import flash.display.Sprite;
     import flash.geom.Rectangle;
-
+    
     import shinater.swing.Label;
+    import shinater.swing.TextArea;
 
     public class GridRenderer extends Sprite {
         private var label:Label;
@@ -22,7 +23,7 @@ package org.marz.spaceSniffer {
             graphics.clear();
             graphics.lineStyle(1);
 			if(fileTree.file.isDirectory)
-				graphics.beginFill(0x000088, .8);
+				graphics.beginFill(0x008888, .8);
 			else
 				graphics.beginFill(0xffffff, .8);
 			
@@ -30,10 +31,13 @@ package org.marz.spaceSniffer {
 			graphics.endFill();
 
             var name:String = fileTree.file.nativePath.substr(fileTree.file.nativePath.lastIndexOf('/') + 1);
-            label.setText(name + ': ' + fileTree.size);
-            label.setAutoSize('left');
-
-            if (rect.width > label.width && rect.height > label.height)
+			label.setAutoSize('left');
+			label.setText(name + ': ' + fileTree.size);
+			
+			if(rect.width < label.width)
+				label.setText(fileTree.size+'');
+				
+            if (rect.width >= label.width && rect.height >= label.height)
                 addChild(label);
 
             horizal = rect.width > rect.height;
