@@ -1,6 +1,6 @@
 package org.marz.spaceSniffer {
     import flash.geom.Rectangle;
-
+    
     import org.puremvc.as3.interfaces.INotification;
     import org.puremvc.as3.patterns.facade.Facade;
     import org.puremvc.as3.patterns.mediator.Mediator;
@@ -13,7 +13,7 @@ package org.marz.spaceSniffer {
         public static const UPDATE:String = 'update';
 
         public function Grids() {
-            super(NAME, new GridRenderer);
+            super(NAME, null);
 
             facade.registerProxy(new GridsProxy);
         }
@@ -30,16 +30,16 @@ package org.marz.spaceSniffer {
         }
 
         private function show():void {
-            GridsProxy.instance.fileTree.explore(3);
+            GridsProxy.instance.fileTree.explore(2);
+            GridsProxy.instance.fileTree.sort();
 
+            StartupProxy.instance.stage.removeChildren();
+
+            var gridRenderer:GridRenderer = new GridRenderer;
             StartupProxy.instance.stage.addChild(gridRenderer);
             var rect:Rectangle = new Rectangle(0, 0, StartupProxy.instance.stage.stageWidth, StartupProxy.instance.stage.stageHeight);
             gridRenderer.depth = 0;
             gridRenderer.update(GridsProxy.instance.fileTree, rect);
-        }
-
-        public function get gridRenderer():GridRenderer {
-            return getViewComponent() as GridRenderer;
         }
 
         override public function listNotificationInterests():Array {

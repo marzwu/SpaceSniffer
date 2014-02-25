@@ -22,6 +22,7 @@ package org.marz.spaceSniffer {
         public var size:int;
 
         public var deep:int;
+        public static var COUNT:int;
 
         public function getDirectoryListing():Array {
             if (children)
@@ -35,6 +36,7 @@ package org.marz.spaceSniffer {
             for each (var i:File in list) {
                 var ft:FileTree = new FileTree(i);
                 ft.deep = deep + 1;
+				ft.parent = this;
                 children.push(ft);
                 size += ft.size;
             }
@@ -43,12 +45,26 @@ package org.marz.spaceSniffer {
         }
 
         public function explore(maxDeep:int):void {
-            if (deep > maxDeep)
+			trace(COUNT++);
+			trace(file.nativePath);
+			
+			if (deep > maxDeep)
                 return;
 
             for each (var i:FileTree in getDirectoryListing()) {
                 i.explore(maxDeep);
             }
+        }
+
+        public function sort():void {
+            var children:Array = getDirectoryListing();
+            if (children)
+                children.sortOn('size', Array.NUMERIC | Array.DESCENDING);
+
+            for each (var i:FileTree in getDirectoryListing()) {
+                i.sort();
+            }
+
         }
     }
 }

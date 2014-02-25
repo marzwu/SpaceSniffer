@@ -4,6 +4,7 @@ package
 	
 	import org.puremvc.as3.patterns.facade.Facade;
 	
+	[SWF(width='800', height="600")]
 	public class SpaceSniffer extends Sprite
 	{
 		public function SpaceSniffer()
