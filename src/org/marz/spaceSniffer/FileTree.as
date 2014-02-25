@@ -8,7 +8,7 @@ package org.marz.spaceSniffer {
             this.file = file;
             if (file.isDirectory == false) {
                 try {
-                    size = file.size;
+                    addSize(file.size);
                 } catch (e:Error) {
                     trace(e.message);
                 }
@@ -19,10 +19,22 @@ package org.marz.spaceSniffer {
 
         private var children:Array;
 
-        public var size:int;
+        private var _size:int;
 
         public var deep:int;
+
         public static var COUNT:int;
+
+        public function get size():int {
+            return _size;
+        }
+
+        public function addSize(s:int):int {
+            _size += s;
+            if (parent)
+                parent.addSize(s);
+            return size;
+        }
 
         public function getDirectoryListing():Array {
             if (children)
@@ -36,19 +48,19 @@ package org.marz.spaceSniffer {
             for each (var i:File in list) {
                 var ft:FileTree = new FileTree(i);
                 ft.deep = deep + 1;
-				ft.parent = this;
+                ft.parent = this;
                 children.push(ft);
-                size += ft.size;
+                addSize(ft.size);
             }
 
             return children;
         }
 
         public function explore(maxDeep:int):void {
-			trace(COUNT++);
-			trace(file.nativePath);
-			
-			if (deep > maxDeep)
+            trace(COUNT++);
+            trace(file.nativePath);
+
+            if (deep > maxDeep)
                 return;
 
             for each (var i:FileTree in getDirectoryListing()) {
