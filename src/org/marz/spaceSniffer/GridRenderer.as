@@ -2,15 +2,18 @@ package org.marz.spaceSniffer {
     import flash.display.Sprite;
     import flash.events.MouseEvent;
     import flash.geom.Rectangle;
-    
+
     import org.puremvc.as3.patterns.facade.Facade;
-    
+
     import shinater.swing.Label;
 
     public class GridRenderer extends Sprite {
-		private static const margin:int = 2;
-		private static const min_size:int = 5;
-		
+        private static const margin:int = 2;
+
+        private static const min_size:int = 5;
+
+        private static const LABEL_HEIGHT:Number = 20;
+
         private var label:Label;
 
         public function GridRenderer() {
@@ -67,31 +70,53 @@ package org.marz.spaceSniffer {
 
             if (fileTree.file.isDirectory) {
                 var list:Array = fileTree.getDirectoryListing();
-                var cursor:int;
-				var acturalW:Number = rect.width - margin * 2;
-				var acturalH:Number = rect.height - 20 - margin * 2;
+                var sizeCursor:int;
+                var clientW:Number = rect.width - min_size * 2;
+                var clientH:Number = rect.height - LABEL_HEIGHT - min_size;
+				var area:int = clientW * clientH;
+                var acturalW:Number = clientW;
+                var acturalH:Number = clientH;
+				var cursorX:int = min_size;
+				var cursorY:int = LABEL_HEIGHT;
                 for each (var i:FileTree in list) {
                     var renderer:GridRenderer = new GridRenderer;
                     renderer.depth = depth + 1;
+					
+					horizal = acturalW > acturalH;
 
                     if (horizal) {
-                        renderer.x = Math.max(min_size, int(acturalW * (cursor / fileTree.size)));
-                        renderer.y = 20;
+//                        renderer.x = min_size + int(acturalW * (sizeCursor / fileTree.size));
+//                        renderer.y = LABEL_HEIGHT;
+                        renderer.x = cursorX;
+                        renderer.y = cursorY;
 
-                        var w:int = int((acturalW) * i.size / fileTree.size) - 2;
+//                        var w:int = acturalW * i.size / fileTree.size;
                         var h:Number = acturalH;
+						var w:int = area * (i.size / fileTree.size) / h;
                         renderer.update(i, new Rectangle(0, 0, Math.max(1, w), Math.max(1, h)));
+						
+						cursorX += w;
+						acturalW -= w;
                     } else {
-                        renderer.x = min_size;
-                        renderer.y = 20 + int((acturalH) * (cursor / fileTree.size));
+//                        renderer.x = min_size;
+//                        renderer.y = LABEL_HEIGHT + int(acturalH * (sizeCursor / fileTree.size));
+                        renderer.x = cursorX;
+                        renderer.y = cursorY;
 
                         w = acturalW;
-                        h = int((acturalH) * (i.size / fileTree.size)) - 2;
+//                        h = acturalH * (i.size / fileTree.size);
+                        h = area * (i.size / fileTree.size) / w;
+						
                         renderer.update(i, new Rectangle(0, 0, Math.max(1, w), Math.max(1, h)));
+						
+						cursorY += h;
+						acturalH -= h;
                     }
+					horizal = !horizal;
+					
                     addChild(renderer);
 
-                    cursor += i.size;
+                    sizeCursor += i.size;
                 }
             }
         }
