@@ -1,7 +1,10 @@
 package org.marz.spaceSniffer {
     import flash.display.Sprite;
+    import flash.events.ContextMenuEvent;
     import flash.events.MouseEvent;
     import flash.geom.Rectangle;
+    import flash.ui.ContextMenu;
+    import flash.ui.ContextMenuItem;
 
     import org.puremvc.as3.patterns.facade.Facade;
 
@@ -21,19 +24,55 @@ package org.marz.spaceSniffer {
             label = new Label('path 0');
 
             this.doubleClickEnabled = true;
-            addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClick);
-            addEventListener(MouseEvent.RIGHT_CLICK, onRightClick);
+
+//			addEventListener(MouseEvent.CLICK, onClick);
+            addEventListener(MouseEvent.DOUBLE_CLICK, onClick);
+//            addEventListener(MouseEvent.RIGHT_CLICK, onClick);
+
+            var menu:ContextMenu = new ContextMenu;
+            this.contextMenu = menu;
+
+            var item:ContextMenuItem;
+            item = new ContextMenuItem('parent');
+            item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelected);
+            menu.items.push(item);
+            item = new ContextMenuItem('open');
+            item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelected);
+            menu.items.push(item);
+            item = new ContextMenuItem('delete');
+            item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelected);
+            menu.items.push(item);
         }
 
-        protected function onRightClick(event:MouseEvent):void {
-            if (fileTree.parent) {
-                Facade.getInstance().sendNotification(Grids.SHOW, fileTree.parent);
-                event.stopImmediatePropagation();
+        protected function onMenuItemSelected(event:ContextMenuEvent):void {
+            switch (event.target.caption) {
+                case 'parent':
+                    if (fileTree.parent) {
+                        Facade.getInstance().sendNotification(Grids.SHOW, fileTree.parent);
+                    }
+                    break;
+                case 'open':
+                    fileTree.file.openWithDefaultApplication();
+                    break;
+                case 'delete':
+                    if (fileTree.file.isDirectory)
+                        fileTree.file.deleteDirectory(true);
+                    else
+                        fileTree.file.deleteFile();
+                    break;
             }
         }
 
-        protected function onDoubleClick(event:MouseEvent):void {
-            Facade.getInstance().sendNotification(Grids.SHOW, fileTree);
+        protected function onClick(event:MouseEvent):void {
+            switch (event.type) {
+                case MouseEvent.CLICK:
+                    break;
+                case MouseEvent.DOUBLE_CLICK:
+                    Facade.getInstance().sendNotification(Grids.SHOW, fileTree);
+                    break;
+                case MouseEvent.RIGHT_CLICK:
+                    break;
+            }
             event.stopImmediatePropagation();
         }
 
@@ -70,53 +109,46 @@ package org.marz.spaceSniffer {
 
             if (fileTree.file.isDirectory) {
                 var list:Array = fileTree.getDirectoryListing();
-                var sizeCursor:int;
+
                 var clientW:Number = rect.width - min_size * 2;
                 var clientH:Number = rect.height - LABEL_HEIGHT - min_size;
-				var area:int = clientW * clientH;
+
+                var area:int = clientW * clientH;
+
                 var acturalW:Number = clientW;
                 var acturalH:Number = clientH;
-				var cursorX:int = min_size;
-				var cursorY:int = LABEL_HEIGHT;
+                var cursorX:int = min_size;
+                var cursorY:int = LABEL_HEIGHT;
+
                 for each (var i:FileTree in list) {
                     var renderer:GridRenderer = new GridRenderer;
                     renderer.depth = depth + 1;
-					
-					horizal = acturalW > acturalH;
+
+                    horizal = acturalW > acturalH;
 
                     if (horizal) {
-//                        renderer.x = min_size + int(acturalW * (sizeCursor / fileTree.size));
-//                        renderer.y = LABEL_HEIGHT;
                         renderer.x = cursorX;
                         renderer.y = cursorY;
 
-//                        var w:int = acturalW * i.size / fileTree.size;
                         var h:Number = acturalH;
-						var w:int = area * (i.size / fileTree.size) / h;
+                        var w:int = area * (i.size / fileTree.size) / h;
                         renderer.update(i, new Rectangle(0, 0, Math.max(1, w), Math.max(1, h)));
-						
-						cursorX += w;
-						acturalW -= w;
+
+                        cursorX += w;
+                        acturalW -= w;
                     } else {
-//                        renderer.x = min_size;
-//                        renderer.y = LABEL_HEIGHT + int(acturalH * (sizeCursor / fileTree.size));
                         renderer.x = cursorX;
                         renderer.y = cursorY;
 
                         w = acturalW;
-//                        h = acturalH * (i.size / fileTree.size);
                         h = area * (i.size / fileTree.size) / w;
-						
-                        renderer.update(i, new Rectangle(0, 0, Math.max(1, w), Math.max(1, h)));
-						
-						cursorY += h;
-						acturalH -= h;
-                    }
-					horizal = !horizal;
-					
-                    addChild(renderer);
 
-                    sizeCursor += i.size;
+                        renderer.update(i, new Rectangle(0, 0, Math.max(1, w), Math.max(1, h)));
+
+                        cursorY += h;
+                        acturalH -= h;
+                    }
+                    addChild(renderer);
                 }
             }
         }
