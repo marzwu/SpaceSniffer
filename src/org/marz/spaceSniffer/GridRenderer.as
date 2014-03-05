@@ -120,6 +120,9 @@ package org.marz.spaceSniffer {
                 var cursorX:int = min_size;
                 var cursorY:int = LABEL_HEIGHT;
 
+                fileTree.group(this, new Rectangle(cursorX, cursorY, acturalW, acturalH), fileTree.getDirectoryListing(), fileTree.size);
+                return;
+
                 for each (var i:FileTree in list) {
                     var renderer:GridRenderer = new GridRenderer;
                     renderer.depth = depth + 1;

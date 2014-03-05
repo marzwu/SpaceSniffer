@@ -1,5 +1,6 @@
 package org.marz.spaceSniffer {
     import flash.filesystem.File;
+    import flash.geom.Rectangle;
 
     public class FileTree {
         public var file:File;
@@ -76,6 +77,82 @@ package org.marz.spaceSniffer {
             for each (var i:FileTree in getDirectoryListing()) {
                 i.sort();
             }
+
+        }
+
+        public function group(renderer:GridRenderer, rect:Rectangle, children:Array, size:int):Array {
+            var r:Array = [];
+            var area:Number = rect.width * rect.height;
+
+            var horizal:Boolean = rect.width > rect.height;
+            var minArea:Number
+            if (horizal)
+                minArea = rect.height * rect.height * 0.618;
+            else
+                minArea = rect.width * rect.width * 0.618;
+
+            var per:Number = minArea / area;
+
+            var sum:int = 0;
+            var interval:Array = [];
+            var w:Number = rect.width;
+            var h:Number = rect.height;
+            var dW:Number = w;
+            var dH:Number = h;
+
+            while (children.length) {
+                var i:FileTree = children.shift();
+                sum += i.size;
+                interval.push(i);
+
+
+                var dPer:Number = sum / size;
+                if (dPer >= per) {
+                    var curr:Rectangle = rect.clone();
+                    if (horizal) {
+                        dW = int(dPer * area / dH);
+                        curr.width = dW;
+
+                        rect.x += dW;
+                        rect.width -= dW;
+                    } else {
+                        dH = int(dPer * area / dW);
+                        curr.height = dH;
+
+                        rect.y += dH;
+                        rect.height -= dH;
+                    }
+
+                    if (interval.length > 2)
+                        group(renderer, curr, interval, sum);
+                    else {
+                        renderer.graphics.lineStyle(1);
+                        if (interval.length == 1)
+                            renderer.graphics.drawRect(curr.x, curr.y, curr.width, curr.height);
+                        else {
+                            var dHorizal:Boolean = curr.width > curr.height;
+							var dd:int;
+							if(dHorizal){
+								dd = curr.width * interval[0].size / sum;
+								renderer.graphics.drawRect(curr.x, curr.y, dd, curr.height);
+								renderer.graphics.drawRect(curr.x + dd, curr.y, curr.width - dd, curr.height);
+							}else{
+								dd = curr.height * interval[0].size / sum;
+								renderer.graphics.drawRect(curr.x, curr.y, curr.width, dd);
+								renderer.graphics.drawRect(curr.x, curr.y + dd, curr.width, curr.height - dd);
+							}
+                        }
+                    }
+
+                    group(renderer, rect.clone(), children, size - sum);
+                    break;
+                }
+            }
+
+            return null;
+        }
+
+        private function render(interval:Array, renderer:GridRenderer, param2:Rectangle):void {
 
         }
     }
