@@ -26,7 +26,7 @@ package {
 			if (Capabilities.os.indexOf('Mac') > -1)
 				var path:String = '/Users/marzwu/Desktop';
 			else if (Capabilities.os.indexOf('Win') > -1) {
-				path = 'F:/';
+				path = 'E:/klive/dirty/snatchly';
 			} else {
 				path = '/';
 			}
