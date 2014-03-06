@@ -5,9 +5,9 @@ package org.marz.spaceSniffer {
     import flash.geom.Rectangle;
     import flash.ui.ContextMenu;
     import flash.ui.ContextMenuItem;
-
+    
     import org.puremvc.as3.patterns.facade.Facade;
-
+    
     import shinater.swing.Label;
 
     public class GridRenderer extends Sprite {
@@ -16,6 +16,8 @@ package org.marz.spaceSniffer {
         private static const min_size:int = 5;
 
         private static const LABEL_HEIGHT:Number = 20;
+		
+		private static const unitArr:Array = new Array("Bytes","KB","MB","GB","TB","PB","EB","ZB","YB");
 
         private var label:Label;
 
@@ -97,10 +99,14 @@ package org.marz.spaceSniffer {
 
             var name:String = fileTree.file.nativePath.substr(fileTree.file.nativePath.lastIndexOf('/') + 1);
             label.setAutoSize('left');
-            label.setText(name + ': ' + fileTree.size);
+			
+			var size:int = fileTree.size;
+			var _index:int;
+			var sizeStr:String = (size / Math.pow(1024, (_index = int(Math.log(size) / Math.log(1024))))).toPrecision(3) + unitArr[_index];
+            label.setText(name + ': ' + sizeStr);
 
             if (rect.width < label.width)
-                label.setText(fileTree.size + '');
+                label.setText(sizeStr + '');
 
             if (rect.width >= label.width && rect.height >= label.height)
                 addChild(label);
@@ -120,7 +126,7 @@ package org.marz.spaceSniffer {
                 var cursorX:int = min_size;
                 var cursorY:int = LABEL_HEIGHT;
 
-                fileTree.group(this, new Rectangle(cursorX, cursorY, acturalW, acturalH), fileTree.getDirectoryListing(), fileTree.size);
+                fileTree.group(this, new Rectangle(cursorX, cursorY, acturalW, acturalH), fileTree.getDirectoryListing(), size);
                 return;
 
                 for each (var i:FileTree in list) {
@@ -134,7 +140,7 @@ package org.marz.spaceSniffer {
                         renderer.y = cursorY;
 
                         var h:Number = acturalH;
-                        var w:int = area * (i.size / fileTree.size) / h;
+                        var w:int = area * (i.size / size) / h;
                         renderer.update(i, new Rectangle(0, 0, Math.max(1, w), Math.max(1, h)));
 
                         cursorX += w;
@@ -144,7 +150,7 @@ package org.marz.spaceSniffer {
                         renderer.y = cursorY;
 
                         w = acturalW;
-                        h = area * (i.size / fileTree.size) / w;
+                        h = area * (i.size / size) / w;
 
                         renderer.update(i, new Rectangle(0, 0, Math.max(1, w), Math.max(1, h)));
 
