@@ -7,6 +7,7 @@ package org.marz.spaceSniffer
 	{
 		private static const NAME:String = 'GirdsProxy';
 		public var fileTree:FileTree;
+		public var fileTreeArr:Array;
 		public function GridsProxy()
 		{
 			super(NAME, null);

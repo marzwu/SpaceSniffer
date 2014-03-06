@@ -103,13 +103,22 @@ package org.marz.spaceSniffer {
             var size:int = fileTree.size;
             var _index:int;
             var sizeStr:String = (size / Math.pow(1024, (_index = int(Math.log(size) / Math.log(1024))))).toPrecision(3) + unitArr[_index];
-            label.setText(name + ': ' + sizeStr);
+            if (fileTree.file.isDirectory)
+                label.setText(name + ': ' + sizeStr);
+            else
+                label.setText(name + '\n' + sizeStr);
 
             if (rect.width < label.width)
                 label.setText(sizeStr + '');
 
-            if (rect.width >= label.width && rect.height >= label.height)
+            if (rect.width >= label.width && rect.height >= label.height) {
                 addChild(label);
+
+                if (false == fileTree.file.isDirectory) {
+                    label.x = (width - label.width) >> 1;
+                    label.y = (height - label.height) >> 1;
+                }
+            }
 
             horizal = rect.width > rect.height;
 
@@ -125,9 +134,9 @@ package org.marz.spaceSniffer {
                 var acturalH:Number = clientH;
                 var cursorX:int = min_size;
                 var cursorY:int = LABEL_HEIGHT;
-				
-				if(clientW < 1 || clientH < 1)
-					return;
+
+                if (clientW < 1 || clientH < 1)
+                    return;
 
                 fileTree.group(this, new Rectangle(cursorX, cursorY, acturalW, acturalH), fileTree.getDirectoryListing().concat(), size);
                 return;

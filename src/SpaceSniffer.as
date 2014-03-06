@@ -1,7 +1,10 @@
 package
 {
 	import flash.display.Sprite;
+	import flash.system.Worker;
 	
+	import org.marz.sys.worker.MainSide;
+	import org.marz.sys.worker.WorkerSide;
 	import org.puremvc.as3.patterns.facade.Facade;
 	
 	[SWF(width='800', height="600")]
@@ -9,7 +12,15 @@ package
 	{
 		public function SpaceSniffer()
 		{
-			initMVC();
+			if(Worker.current.isPrimordial){
+				initMVC();
+				MainSide.instance.init(loaderInfo);
+				MainSide.instance.start();
+			}else{
+				stage.frameRate = 2;
+				WorkerSide.instance.init();
+				WorkerSide.instance.startWorking();
+			}
 		}
 
 		private function initMVC():void

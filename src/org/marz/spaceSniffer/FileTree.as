@@ -20,17 +20,17 @@ package org.marz.spaceSniffer {
 
         private var children:Array;
 
-        private var _size:int;
+        private var _size:Number;
 
         public var deep:int;
 
         public static var COUNT:int;
 
-        public function get size():int {
+        public function get size():Number {
             return _size;
         }
 
-        public function addSize(s:int):int {
+        public function addSize(s:Number):Number {
             _size += s;
             if (parent)
                 parent.addSize(s);
@@ -53,6 +53,11 @@ package org.marz.spaceSniffer {
                 children.push(ft);
                 addSize(ft.size);
             }
+			
+			sort();
+			
+			if(parent)
+				parent.sort();
 
             return children;
         }
@@ -74,13 +79,13 @@ package org.marz.spaceSniffer {
             if (children)
                 children.sortOn('size', Array.NUMERIC | Array.DESCENDING);
 
-            for each (var i:FileTree in getDirectoryListing()) {
-                i.sort();
-            }
+//            for each (var i:FileTree in getDirectoryListing()) {
+//                i.sort();
+//            }
 
         }
 
-        public function group(renderer:GridRenderer, rect:Rectangle, children:Array, size:int):void {
+        public function group(renderer:GridRenderer, rect:Rectangle, children:Array, size:Number):void {
             var area:Number = rect.width * rect.height;
 
             var horizal:Boolean = rect.width > rect.height;
@@ -92,7 +97,7 @@ package org.marz.spaceSniffer {
 
             var per:Number = minArea / area;
 
-            var sum:int = 0;
+            var sum:Number = 0;
             var interval:Array = [];
             var w:Number = rect.width;
             var h:Number = rect.height;
