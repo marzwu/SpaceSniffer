@@ -5,9 +5,9 @@ package org.marz.spaceSniffer {
     import flash.geom.Rectangle;
     import flash.ui.ContextMenu;
     import flash.ui.ContextMenuItem;
-    
+
     import org.puremvc.as3.patterns.facade.Facade;
-    
+
     import shinater.swing.Label;
 
     public class GridRenderer extends Sprite {
@@ -16,8 +16,8 @@ package org.marz.spaceSniffer {
         private static const min_size:int = 5;
 
         private static const LABEL_HEIGHT:Number = 20;
-		
-		private static const unitArr:Array = new Array("Bytes","KB","MB","GB","TB","PB","EB","ZB","YB");
+
+        private static const unitArr:Array = new Array("Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
 
         private var label:Label;
 
@@ -84,8 +84,8 @@ package org.marz.spaceSniffer {
             if (depth > 2)
                 return;
 
-            if (rect.width < min_size || rect.height < min_size)
-                return;
+//            if (rect.width < min_size || rect.height < min_size)
+//                return;
 
             graphics.clear();
             graphics.lineStyle(1);
@@ -94,15 +94,15 @@ package org.marz.spaceSniffer {
             else
                 graphics.beginFill(0xffffff, .8);
 
-            graphics.drawRect(0, 0, rect.width - 1, rect.height - 1);
+            graphics.drawRect(0, 0, rect.width, rect.height);
             graphics.endFill();
 
             var name:String = fileTree.file.nativePath.substr(fileTree.file.nativePath.lastIndexOf('/') + 1);
             label.setAutoSize('left');
-			
-			var size:int = fileTree.size;
-			var _index:int;
-			var sizeStr:String = (size / Math.pow(1024, (_index = int(Math.log(size) / Math.log(1024))))).toPrecision(3) + unitArr[_index];
+
+            var size:int = fileTree.size;
+            var _index:int;
+            var sizeStr:String = (size / Math.pow(1024, (_index = int(Math.log(size) / Math.log(1024))))).toPrecision(3) + unitArr[_index];
             label.setText(name + ': ' + sizeStr);
 
             if (rect.width < label.width)
@@ -125,8 +125,11 @@ package org.marz.spaceSniffer {
                 var acturalH:Number = clientH;
                 var cursorX:int = min_size;
                 var cursorY:int = LABEL_HEIGHT;
+				
+				if(clientW < 1 || clientH < 1)
+					return;
 
-                fileTree.group(this, new Rectangle(cursorX, cursorY, acturalW, acturalH), fileTree.getDirectoryListing(), size);
+                fileTree.group(this, new Rectangle(cursorX, cursorY, acturalW, acturalH), fileTree.getDirectoryListing().concat(), size);
                 return;
 
                 for each (var i:FileTree in list) {

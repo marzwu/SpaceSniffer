@@ -1,150 +1,164 @@
 package org.marz.spaceSniffer {
-	import flash.filesystem.File;
-	import flash.geom.Rectangle;
+    import flash.filesystem.File;
+    import flash.geom.Rectangle;
 
-	public class FileTree {
-		public var file:File;
+    public class FileTree {
+        public var file:File;
 
-		public function FileTree(file:File) {
-			this.file = file;
-			if (file.isDirectory == false) {
-				try {
-					addSize(file.size);
-				} catch (e:Error) {
-					trace(e.message);
-				}
-			}
-		}
+        public function FileTree(file:File) {
+            this.file = file;
+            if (file.isDirectory == false) {
+                try {
+                    addSize(file.size);
+                } catch (e:Error) {
+                    trace(e.message);
+                }
+            }
+        }
 
-		public var parent:FileTree;
+        public var parent:FileTree;
 
-		private var children:Array;
+        private var children:Array;
 
-		private var _size:int;
+        private var _size:int;
 
-		public var deep:int;
+        public var deep:int;
 
-		public static var COUNT:int;
+        public static var COUNT:int;
 
-		public function get size():int {
-			return _size;
-		}
+        public function get size():int {
+            return _size;
+        }
 
-		public function addSize(s:int):int {
-			_size += s;
-			if (parent)
-				parent.addSize(s);
-			return size;
-		}
+        public function addSize(s:int):int {
+            _size += s;
+            if (parent)
+                parent.addSize(s);
+            return size;
+        }
 
-		public function getDirectoryListing():Array {
-			if (children)
-				return children;
+        public function getDirectoryListing():Array {
+            if (children)
+                return children;
 
-			if (file.isDirectory == false)
-				return null;
+            if (file.isDirectory == false)
+                return null;
 
-			children = [];
-			var list:Array = file.getDirectoryListing();
-			for each (var i:File in list) {
-				var ft:FileTree = new FileTree(i);
-				ft.deep = deep + 1;
-				ft.parent = this;
-				children.push(ft);
-				addSize(ft.size);
-			}
+            children = [];
+            var list:Array = file.getDirectoryListing();
+            for each (var i:File in list) {
+                var ft:FileTree = new FileTree(i);
+                ft.deep = deep + 1;
+                ft.parent = this;
+                children.push(ft);
+                addSize(ft.size);
+            }
 
-			return children;
-		}
+            return children;
+        }
 
-		public function explore(maxDeep:int):void {
-			trace(COUNT++);
-			trace(file.nativePath);
+        public function explore(maxDeep:int):void {
+            trace(COUNT++);
+            trace(file.nativePath);
 
-			if (deep > maxDeep)
-				return;
+            if (deep > maxDeep)
+                return;
 
-			for each (var i:FileTree in getDirectoryListing()) {
-				i.explore(maxDeep);
-			}
-		}
+            for each (var i:FileTree in getDirectoryListing()) {
+                i.explore(maxDeep);
+            }
+        }
 
-		public function sort():void {
-			var children:Array = getDirectoryListing();
-			if (children)
-				children.sortOn('size', Array.NUMERIC | Array.DESCENDING);
+        public function sort():void {
+            var children:Array = getDirectoryListing();
+            if (children)
+                children.sortOn('size', Array.NUMERIC | Array.DESCENDING);
 
-			for each (var i:FileTree in getDirectoryListing()) {
-				i.sort();
-			}
+            for each (var i:FileTree in getDirectoryListing()) {
+                i.sort();
+            }
 
-		}
+        }
 
-		public function group(renderer:GridRenderer, rect:Rectangle, children:Array, size:int):void {
-			var area:Number = rect.width * rect.height;
+        public function group(renderer:GridRenderer, rect:Rectangle, children:Array, size:int):void {
+            var area:Number = rect.width * rect.height;
 
-			var horizal:Boolean = rect.width > rect.height;
-			var minArea:Number
-			if (horizal)
-				minArea = rect.height * rect.height * 0.618;
-			else
-				minArea = rect.width * rect.width * 0.618;
+            var horizal:Boolean = rect.width > rect.height;
+            var minArea:Number
+            if (horizal)
+                minArea = rect.height * rect.height * 0.618;
+            else
+                minArea = rect.width * rect.width * 0.618;
 
-			var per:Number = minArea / area;
+            var per:Number = minArea / area;
 
-			var sum:int = 0;
-			var interval:Array = [];
-			var w:Number = rect.width;
-			var h:Number = rect.height;
+            var sum:int = 0;
+            var interval:Array = [];
+            var w:Number = rect.width;
+            var h:Number = rect.height;
 
-			while (children.length) {
-				var i:FileTree = children.shift();
-				sum += i.size;
-				interval.push(i);
+            while (children.length) {
+                var i:FileTree = children.shift();
+                sum += i.size;
+                interval.push(i);
 
 
-				var dPer:Number = sum / size;
-				if (dPer >= per) {
-					var curr:Rectangle = rect.clone();
-					if (horizal) {
-						w = int(dPer * area / h);
-						curr.width = w;
+                var dPer:Number = sum / size;
+                if (dPer >= per) {
+                    var curr:Rectangle = rect.clone();
+                    if (horizal) {
+                        w = int(dPer * area / h);
+                        curr.width = w;
 
-						rect.x += w;
-						rect.width -= w;
-					} else {
-						h = int(dPer * area / w);
-						curr.height = h;
+                        rect.x += w;
+                        rect.width -= w;
+                    } else {
+                        h = int(dPer * area / w);
+                        curr.height = h;
 
-						rect.y += h;
-						rect.height -= h;
-					}
+                        rect.y += h;
+                        rect.height -= h;
+                    }
 
-					if (interval.length > 2)
-						group(renderer, curr, interval, sum);
-					else {
-						renderer.graphics.lineStyle(1);
-						if (interval.length == 1)
-							renderer.graphics.drawRect(curr.x, curr.y, curr.width, curr.height);
-						else {
-							var dHorizal:Boolean = curr.width > curr.height;
-							var dd:int;
-							if (dHorizal) {
-								dd = curr.width * interval[0].size / sum;
-								renderer.graphics.drawRect(curr.x, curr.y, dd, curr.height);
-								renderer.graphics.drawRect(curr.x + dd, curr.y, curr.width - dd, curr.height);
-							} else {
-								dd = curr.height * interval[0].size / sum;
-								renderer.graphics.drawRect(curr.x, curr.y, curr.width, dd);
-								renderer.graphics.drawRect(curr.x, curr.y + dd, curr.width, curr.height - dd);
-							}
-						}
-					}
+                    if (interval.length > 2)
+                        group(renderer, curr, interval, sum);
+                    else {
+                        renderer.graphics.lineStyle(1);
+                        if (interval.length == 1) {
+//							renderer.graphics.drawRect(curr.x, curr.y, curr.width, curr.height);
+                            render(renderer, interval[0], curr.x, curr.y, curr.width, curr.height);
+                        } else {
+                            var dHorizal:Boolean = curr.width > curr.height;
+                            var dd:int;
+                            if (dHorizal) {
+                                dd = curr.width * interval[0].size / sum;
+//                                renderer.graphics.drawRect(curr.x, curr.y, dd, curr.height);
+//                                renderer.graphics.drawRect(curr.x + dd, curr.y, curr.width - dd, curr.height);
+                                render(renderer, interval[0], curr.x, curr.y, dd, curr.height);
+                                render(renderer, interval[1], curr.x + dd, curr.y, curr.width - dd, curr.height);
+                            } else {
+                                dd = curr.height * interval[0].size / sum;
+//                                renderer.graphics.drawRect(curr.x, curr.y, curr.width, dd);
+//                                renderer.graphics.drawRect(curr.x, curr.y + dd, curr.width, curr.height - dd);
+                                render(renderer, interval[0], curr.x, curr.y, curr.width, dd);
+                                render(renderer, interval[1], curr.x, curr.y + dd, curr.width, curr.height - dd);
+                            }
+                        }
+                    }
 
-					group(renderer, rect.clone(), children, size - sum);
-					break;
-				}
-			}
-		}
-	}
+                    group(renderer, rect.clone(), children, size - sum);
+                    break;
+                }
+            }
+        }
+
+        private function render(renderer:GridRenderer, f:FileTree, x:Number, y:Number, width:Number, height:Number):void {
+            var r:GridRenderer = new GridRenderer;
+            r.x = x;
+            r.y = y;
+            r.depth = renderer.depth + 1;
+            r.update(f, new Rectangle(0, 0, width, height));
+            renderer.addChild(r);
+        }
+    }
 }
