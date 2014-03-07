@@ -50,14 +50,17 @@ package org.marz.spaceSniffer {
 			if (file.isDirectory == false)
 				return null;
 
+			children = [];
+
 			var sync:Boolean = true;
 
 			if (sync) {
 //				var s:int = getTimer();
 				var list:Array = file.getDirectoryListing();
 //				trace('getDirectoryListing time', getTimer() - s);
-				
-				children = parseList(list);
+
+				var dSize:Number = parseList(list, children);
+				addSize(dSize);
 				sort();
 			} else {
 				file.getDirectoryListingAsync();
@@ -65,21 +68,21 @@ package org.marz.spaceSniffer {
 
 				function directoryListingHandler(event:FileListEvent):void {
 					var list:Array = event.files;
-					children = parseList(list);
+					parseList(list, children);
 				}
 			}
 
 			return children;
 		}
 
-		private function parseList(list:Array):Array {
-			var r:Array = [];
+		private function parseList(list:Array, children:Array):Number {
+			var r:Number = 0;
 			for each (var i:File in list) {
 				var ft:FileTree = new FileTree(i);
 				ft.deep = deep + 1;
 				ft.parent = this;
-				r.push(ft);
-				addSize(ft.size);
+				children.push(ft);
+				r += ft.size;
 			}
 			return r;
 		}
