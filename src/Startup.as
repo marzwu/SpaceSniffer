@@ -25,7 +25,7 @@ package {
 //			sendNotification(Grids.SHOW, new FileTree(directories[0]));
 
 			if (Capabilities.os.indexOf('Mac') > -1)
-				var path:String = '/Users/marzwu/Desktop';//Desktop Downloads
+				var path:String = '/Users/marzwu/';//Desktop Downloads
 			else if (Capabilities.os.indexOf('Win') > -1) {
 //				path = 'E:/klive/dirty/snatchly';
 //				path = 'E:/klive/';

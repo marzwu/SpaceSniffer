@@ -95,8 +95,9 @@ package org.marz.spaceSniffer {
             graphics.drawRect(0, 0, rect.width, rect.height);
             graphics.endFill();
 
-            var name:String = fileTree.file.nativePath.substr(fileTree.file.nativePath.lastIndexOf('/') + 1);
-			name = fileTree.file.nativePath.substr(fileTree.file.nativePath.lastIndexOf('\\') + 1);
+			var name:String = fileTree.file.nativePath;
+			name = name.substr(name.lastIndexOf('/') + 1);
+			name = name.substr(name.lastIndexOf('\\') + 1);
             label.setAutoSize('left');
 
             var size:Number = fileTree.size;
