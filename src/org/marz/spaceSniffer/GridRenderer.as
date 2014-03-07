@@ -52,7 +52,11 @@ package org.marz.spaceSniffer {
                     }
                     break;
                 case 'open':
-                    fileTree.file.openWithDefaultApplication();
+					try{
+                    	fileTree.file.openWithDefaultApplication();
+					}catch(e:Error){
+						trace(e);
+					}
                     break;
                 case 'delete':
                     if (fileTree.file.isDirectory)
