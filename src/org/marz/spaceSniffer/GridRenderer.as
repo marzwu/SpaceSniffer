@@ -5,19 +5,17 @@ package org.marz.spaceSniffer {
     import flash.geom.Rectangle;
     import flash.ui.ContextMenu;
     import flash.ui.ContextMenuItem;
-
+    
     import org.puremvc.as3.patterns.facade.Facade;
-
+    
     import shinater.swing.Label;
 
     public class GridRenderer extends Sprite {
-        private static const margin:int = 2;
-
         private static const min_size:int = 5;
 
         private static const LABEL_HEIGHT:Number = 20;
 
-        private static const unitArr:Array = new Array("Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
+        private static const UNIT_ARR:Array = new Array("Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB");
 
         private var label:Label;
 
@@ -98,11 +96,12 @@ package org.marz.spaceSniffer {
             graphics.endFill();
 
             var name:String = fileTree.file.nativePath.substr(fileTree.file.nativePath.lastIndexOf('/') + 1);
+			name = fileTree.file.nativePath.substr(fileTree.file.nativePath.lastIndexOf('\\') + 1);
             label.setAutoSize('left');
 
-            var size:int = fileTree.size;
+            var size:Number = fileTree.size;
             var _index:int;
-            var sizeStr:String = (size / Math.pow(1024, (_index = int(Math.log(size) / Math.log(1024))))).toPrecision(3) + unitArr[_index];
+            var sizeStr:String = (size / Math.pow(1024, (_index = int(Math.log(size) / Math.log(1024))))).toPrecision(3) + UNIT_ARR[_index];
             if (fileTree.file.isDirectory)
                 label.setText(name + ': ' + sizeStr);
             else
@@ -188,6 +187,6 @@ package org.marz.spaceSniffer {
 
         public var horizal:Boolean;
 
-        private var fileTree:FileTree;
+        public var fileTree:FileTree;
     }
 }
