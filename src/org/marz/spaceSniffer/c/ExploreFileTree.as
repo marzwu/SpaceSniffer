@@ -1,8 +1,8 @@
 package org.marz.spaceSniffer.c {
 	import flash.utils.getTimer;
 
-	import org.marz.spaceSniffer.FileTree;
-	import org.marz.spaceSniffer.GridsProxy;
+	import org.marz.spaceSniffer.m.vo.FileTree;
+	import org.marz.spaceSniffer.m.GridsProxy;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 

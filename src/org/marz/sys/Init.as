@@ -8,7 +8,7 @@ package org.marz.sys {
         public static const INIT:String = 'INIT';
 
         override public function execute(notification:INotification):void {
-            StartupProxy.instance.stage.addEventListener(Event.ENTER_FRAME, OnEnterFrameHandler);
+            Global.stage.addEventListener(Event.ENTER_FRAME, OnEnterFrameHandler);
         }
 
         protected function OnEnterFrameHandler(event:Event):void {

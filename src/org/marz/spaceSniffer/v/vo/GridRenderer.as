@@ -1,4 +1,4 @@
-package org.marz.spaceSniffer {
+package org.marz.spaceSniffer.v.vo {
     import flash.display.Sprite;
     import flash.events.ContextMenuEvent;
     import flash.events.MouseEvent;
@@ -9,6 +9,8 @@ package org.marz.spaceSniffer {
     import org.puremvc.as3.patterns.facade.Facade;
     
     import shinater.swing.Label;
+    import org.marz.spaceSniffer.m.vo.FileTree;
+    import org.marz.spaceSniffer.v.GridsMediator;
 
     public class GridRenderer extends Sprite {
         private static const min_size:int = 5;
@@ -48,7 +50,7 @@ package org.marz.spaceSniffer {
             switch (event.target.caption) {
                 case 'parent':
                     if (fileTree.parent) {
-                        Facade.getInstance().sendNotification(Grids.SHOW, fileTree.parent);
+                        Facade.getInstance().sendNotification(GridsMediator.SHOW, fileTree.parent);
                     }
                     break;
                 case 'open':
@@ -72,7 +74,7 @@ package org.marz.spaceSniffer {
                 case MouseEvent.CLICK:
                     break;
                 case MouseEvent.DOUBLE_CLICK:
-                    Facade.getInstance().sendNotification(Grids.SHOW, fileTree);
+                    Facade.getInstance().sendNotification(GridsMediator.SHOW, fileTree);
                     break;
                 case MouseEvent.RIGHT_CLICK:
                     break;

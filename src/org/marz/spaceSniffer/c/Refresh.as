@@ -1,6 +1,6 @@
 package org.marz.spaceSniffer.c
 {
-	import org.marz.spaceSniffer.Grids;
+	import org.marz.spaceSniffer.v.GridsMediator;
 	import org.puremvc.as3.patterns.facade.Facade;
 
 	public class Refresh
@@ -11,7 +11,7 @@ package org.marz.spaceSniffer.c
 		
 		public static function doRefresh():void
 		{
-			Facade.getInstance().sendNotification(Grids.UPDATE);
+			Facade.getInstance().sendNotification(GridsMediator.UPDATE);
 		}
 	}
 }

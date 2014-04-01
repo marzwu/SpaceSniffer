@@ -1,7 +1,8 @@
-package org.marz.spaceSniffer
+package org.marz.spaceSniffer.m
 {
 	import org.puremvc.as3.patterns.facade.Facade;
 	import org.puremvc.as3.patterns.proxy.Proxy;
+	import org.marz.spaceSniffer.m.vo.FileTree;
 	
 	public class GridsProxy extends Proxy
 	{

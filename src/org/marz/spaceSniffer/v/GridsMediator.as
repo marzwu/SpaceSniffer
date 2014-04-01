@@ -1,4 +1,4 @@
-package org.marz.spaceSniffer {
+package org.marz.spaceSniffer.v {
 	import flash.geom.Rectangle;
 
 	import org.marz.spaceSniffer.c.ExploreFileTree;
@@ -7,16 +7,20 @@ package org.marz.spaceSniffer {
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.facade.Facade;
 	import org.puremvc.as3.patterns.mediator.Mediator;
+	import org.marz.spaceSniffer.m.vo.FileTree;
+	import org.marz.spaceSniffer.m.GridsProxy;
+	import org.marz.spaceSniffer.v.vo.GridRenderer;
 
-	public class Grids extends Mediator {
+	public class GridsMediator extends Mediator {
 		private static const NAME:String = 'Grids';
 
 		public static const SHOW:String = 'show';
 
 		public static const UPDATE:String = 'update';
+
 		private var count:int;
 
-		public function Grids() {
+		public function GridsMediator() {
 			super(NAME, null);
 
 			facade.registerProxy(new GridsProxy);
@@ -32,26 +36,28 @@ package org.marz.spaceSniffer {
 					sendNotification(ExploreFileTree.EXLORE_FILE_TREE);
 					break;
 				case UPDATE:
-					if (GridsProxy.instance.dataChanged) {
-						if (count == 24) {
-							count = 0;
-							dataChanged(GridsProxy.instance.fileTree);
-							GridsProxy.instance.dataChanged = false;
+					if (GridsProxy.instance.fileTree) {
+						if (GridsProxy.instance.dataChanged) {
+							if (count == 24) {
+								count = 0;
+								dataChanged(GridsProxy.instance.fileTree);
+								GridsProxy.instance.dataChanged = false;
+							}
+							count++;
 						}
-						count++;
+						sendNotification(ExploreFileTree.EXLORE_FILE_TREE);
 					}
-					sendNotification(ExploreFileTree.EXLORE_FILE_TREE);
 				default:
 					break;
 			}
 		}
 
 		private function dataChanged(ft:FileTree):void {
-			StartupProxy.instance.stage.removeChildren();
+			Global.stage.removeChildren();
 
 			var gridRenderer:GridRenderer = new GridRenderer;
-			StartupProxy.instance.stage.addChild(gridRenderer);
-			var rect:Rectangle = new Rectangle(0, 0, StartupProxy.instance.stage.stageWidth, StartupProxy.instance.stage.stageHeight);
+			Global.stage.addChild(gridRenderer);
+			var rect:Rectangle = new Rectangle(0, 0, Global.stage.stageWidth, Global.stage.stageHeight);
 			gridRenderer.depth = 0;
 			gridRenderer.update(ft, rect);
 		}
@@ -60,8 +66,8 @@ package org.marz.spaceSniffer {
 			return [SHOW, UPDATE];
 		}
 
-		public static function get instance():Grids {
-			return Grids(Facade.getInstance().retrieveMediator(NAME));
+		public static function get instance():GridsMediator {
+			return GridsMediator(Facade.getInstance().retrieveMediator(NAME));
 		}
 	}
 }

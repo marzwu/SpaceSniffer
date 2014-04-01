@@ -2,7 +2,7 @@ package org.marz.spaceSniffer.worker
 {
 	import flash.filesystem.File;
 	
-	import org.marz.spaceSniffer.FileTree;
+	import org.marz.spaceSniffer.m.vo.FileTree;
 	import org.marz.sys.worker.WorkerSide;
 
 	public class LaunchScan

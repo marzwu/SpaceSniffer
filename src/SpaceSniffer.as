@@ -19,7 +19,9 @@ package {
 
 		private function initMVC():void {
 			Facade.getInstance().registerCommand(Startup.STARTUP, Startup);
+			
 			Facade.getInstance().registerProxy(new StartupProxy);
+			
 			Facade.getInstance().sendNotification(Startup.STARTUP, stage);
 		}
 

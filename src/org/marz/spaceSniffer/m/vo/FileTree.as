@@ -1,8 +1,9 @@
-package org.marz.spaceSniffer {
+package org.marz.spaceSniffer.m.vo {
 	import flash.events.FileListEvent;
 	import flash.filesystem.File;
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
+	import org.marz.spaceSniffer.v.vo.GridRenderer;
 
 	public class FileTree {
 		public var file:File;

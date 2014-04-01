@@ -9,8 +9,6 @@ package
 	{
 		private static const NAME:String = 'StartupProxy';
 		
-		public var stage:Stage;
-		
 		public function StartupProxy()
 		{
 			super(NAME, null);
