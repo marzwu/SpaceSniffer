@@ -1,12 +1,16 @@
 package org.marz.spaceSniffer.v {
 	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
 	import flash.filesystem.File;
-
+	
 	import org.bellona.utils.UIUtils;
+	import org.marz.spaceSniffer.m.vo.FileTree;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
-
+	
 	import shinater.swing.Button;
+	import shinater.swing.List;
+	import shinater.swing.Panel;
 	import shinater.swing.Window;
 
 	public class PickVolumeMediator extends Mediator {
@@ -31,17 +35,28 @@ package org.marz.spaceSniffer.v {
 				case SHOW_VOLUMES:
 					window.setTitle('选择一个磁盘');
 
-					window.getContent().removeChildren();
-					var x:int = 0;
-					var y:int = 0;
-					for each (var i:File in notification.getBody()) {
-						var button:Button = new Button(i.name);
-						button.setAutoSize(true);
 
-						button.x = x;
-						button.y = y;
-						window.getContent().addChild(button);
-						x += button.getWidth();
+					var panel:Panel = window.getContent();
+					panel.removeChildren();
+
+					var lst:List = new List;
+					lst.setSize(120, 150);
+					panel.addChild(lst);
+
+					var okBtn:Button = new Button('确定');
+					okBtn.x = 160;
+					okBtn.addEventListener(MouseEvent.CLICK, function onOkBtn(event:MouseEvent):void {
+						var volume:String = String(lst.getSelectedItem());
+						if (volume) {
+							var file:File = new File(volume);
+							sendNotification(GridsMediator.SHOW, new FileTree(file));
+							UIUtils.removeFromParent(window);
+						}
+					});
+					panel.addChild(okBtn);
+
+					for each (var i:File in notification.getBody()) {
+						lst.addItem(i.name);
 					}
 
 					window.closeButton.visible = false;
@@ -55,6 +70,7 @@ package org.marz.spaceSniffer.v {
 					break;
 			}
 		}
+
 
 		private function get window():Window {
 			return Window(viewComponent);
