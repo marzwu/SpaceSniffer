@@ -1,11 +1,10 @@
 package org.marz.spaceSniffer.v {
-	import flash.display.DisplayObject;
 	import flash.filesystem.File;
-
+	
 	import org.bellona.utils.UIUtils;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
-
+	
 	import shinater.swing.Button;
 	import shinater.swing.Window;
 
