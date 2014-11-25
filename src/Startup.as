@@ -6,6 +6,7 @@ package {
 	import flash.system.Capabilities;
 	
 	import org.marz.spaceSniffer.c.ExploreFileTree;
+	import org.marz.spaceSniffer.c.InitWorkSpaceUI;
 	import org.marz.spaceSniffer.m.vo.FileTree;
 	import org.marz.spaceSniffer.v.GridsMediator;
 	import org.marz.spaceSniffer.v.PickVolumeMediator;
@@ -31,6 +32,7 @@ package {
 			initMVC();
 
 			sendNotification(Init.INIT);
+			sendNotification(InitWorkSpaceUI.INIT_WORK_SPACE_UI);
 
 			var directories:Array = File.getRootDirectories();
 //			sendNotification(Grids.SHOW, new FileTree(directories[0]));
@@ -61,6 +63,7 @@ package {
 //			facade.registerCommand(WorkerReady.worker_side_ready, WorkerReady);
 			facade.registerCommand(ExploreFileTree.EXLORE_FILE_TREE, ExploreFileTree);
 			facade.registerCommand(Init.INIT, Init);
+			facade.registerCommand(InitWorkSpaceUI.INIT_WORK_SPACE_UI, InitWorkSpaceUI);
 
 			facade.registerMediator(new GridsMediator);
 			facade.registerMediator(new PickVolumeMediator(new Window));

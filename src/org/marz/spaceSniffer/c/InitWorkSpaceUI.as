@@ -9,6 +9,8 @@ package org.marz.spaceSniffer.c {
 	import shinater.swing.MenuItem;
 
 	public class InitWorkSpaceUI extends SimpleCommand {
+		public static const INIT_WORK_SPACE_UI:String = 'InitWorkSpaceUI';
+		
 		override public function execute(notification:INotification):void {
 			var pickMenu:Menu = new Menu;
 
