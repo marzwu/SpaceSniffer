@@ -1,3 +1,3 @@
 SpaceSniffer
 ============
-do not
+跨平台的SpaceSniffer
